@@ -55,11 +55,16 @@ export default function AdminPanel({
   };
 
   // Helper trigger to execute a server JSON file save
+  const [showGithubNotice, setShowGithubNotice] = useState(false);
+  const [hasPendingGitChanges, setHasPendingGitChanges] = useState(false);
+
   const handleSaveFile = async (key: string, data: any) => {
     setFeedback({ type: "success", message: "Salvando no servidor..." });
     const res = await saveData(key, data, config.adminPassword || "admin");
     if (res.success) {
       setFeedback({ type: "success", message: `Arquivo ${key}.json atualizado com sucesso!` });
+      setHasPendingGitChanges(true);
+      setShowGithubNotice(true);
     } else {
       setFeedback({ type: "error", message: `Erro ao salvar arquivo ${key}: ${res.message}` });
     }
@@ -578,9 +583,29 @@ export default function AdminPanel({
             </p>
           </div>
 
-          <button onClick={onClose} className="p-2 bg-white/5 rounded-full hover:bg-white/10 text-slate-400 hover:text-white cursor-pointer">
-            <X className="w-5 h-5" />
-          </button>
+          <div className="flex items-center space-x-3">
+            {hasPendingGitChanges ? (
+              <button
+                onClick={() => setShowGithubNotice(true)}
+                className="flex items-center space-x-2 bg-yellow-500/10 hover:bg-yellow-500/20 text-[#F4C430] border border-[#F4C430]/30 px-4 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer shadow-sm animate-pulse"
+              >
+                <span className="w-2 h-2 bg-[#F4C430] rounded-full animate-ping"></span>
+                <span>Enviar para o GitHub ➔</span>
+              </button>
+            ) : (
+              <button
+                onClick={() => setShowGithubNotice(true)}
+                className="flex items-center space-x-2 bg-white/5 hover:bg-white/10 text-slate-300 border border-white/5 px-4 py-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer"
+              >
+                <GitBranch className="w-3.5 h-3.5 text-[#0E5EA8]" />
+                <span>Salvar no GitHub</span>
+              </button>
+            )}
+
+            <button onClick={onClose} className="p-2.5 bg-white/5 rounded-full hover:bg-white/10 text-slate-400 hover:text-white cursor-pointer transition-colors">
+              <X className="w-5 h-5" />
+            </button>
+          </div>
         </header>
 
         {/* Global Feedback Banner */}
@@ -1748,6 +1773,77 @@ export default function AdminPanel({
 
         </div>
       </div>
+
+      {/* GitHub Sincronização Guide Modal */}
+      {showGithubNotice && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/90 backdrop-blur-md p-4">
+          <div className="bg-slate-900 border border-yellow-500/30 max-w-lg w-full rounded-3xl p-6 shadow-2xl text-white relative animate-in fade-in zoom-in duration-200">
+            <button 
+              onClick={() => setShowGithubNotice(false)} 
+              className="absolute top-4 right-4 p-1.5 bg-white/5 rounded-full hover:bg-white/10 text-slate-400 hover:text-white cursor-pointer transition-colors"
+            >
+              <X className="w-4 h-4" />
+            </button>
+
+            <div className="flex items-center space-x-3 mb-4">
+              <div className="p-2.5 bg-yellow-500/10 text-[#F4C430] rounded-xl">
+                <GitBranch className="w-6 h-6" />
+              </div>
+              <div>
+                <h4 className="font-display font-black text-lg tracking-wider uppercase">Dados Salvos no Servidor!</h4>
+                <p className="text-xs text-slate-400">Suas alterações foram gravadas temporariamente na nuvem.</p>
+              </div>
+            </div>
+
+            <div className="space-y-4 text-xs text-slate-300 leading-relaxed bg-slate-950/50 p-4 rounded-2xl border border-white/5">
+              <p>
+                As alterações que você faz aqui no Painel são salvas na pasta <code className="text-yellow-400 font-mono">/dados/</code> do seu site no ar. Mas para que elas fiquem <strong>salvas para sempre</strong> no seu código oficial e no seu GitHub, siga as instruções abaixo:
+              </p>
+              
+              <div className="space-y-2 border-t border-white/5 pt-3">
+                <p className="font-bold text-[#F4C430] uppercase tracking-wider text-[10px]">Passo a Passo de 2 Cliques:</p>
+                <ol className="list-decimal list-inside space-y-2 text-slate-200">
+                  <li>
+                    Olhe no canto superior direito do seu navegador, na barra preta do <strong>Google AI Studio</strong> (acima do site).
+                  </li>
+                  <li>
+                    Clique no botão azul <strong className="bg-[#0E5EA8]/50 text-blue-300 px-2 py-0.5 rounded border border-blue-500/20">Publish</strong> ou no ícone da Engrenagem <strong className="bg-slate-800 text-slate-200 px-1.5 py-0.5 rounded">⚙️</strong>.
+                  </li>
+                  <li>
+                    Selecione a opção de <strong>exportar / sincronizar com o GitHub</strong>. O AI Studio atualizará seu repositório instantaneamente com os novos arquivos JSON gerados pelo seu painel!
+                  </li>
+                </ol>
+              </div>
+
+              <div className="border-t border-white/5 pt-3 text-slate-400">
+                <p>
+                  <strong>Dica de Segurança:</strong> Se preferir, você também pode baixar um arquivo backup clicando no botão abaixo e guardá-lo no seu computador.
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-6 flex flex-col sm:flex-row gap-3">
+              <button
+                onClick={() => {
+                  setShowGithubNotice(false);
+                  handleExportBackup();
+                }}
+                className="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-200 py-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center space-x-2 border border-white/5 cursor-pointer"
+              >
+                <Download className="w-4 h-4 text-[#F4C430]" />
+                <span>Baixar Backup Completo</span>
+              </button>
+              <button
+                onClick={() => setShowGithubNotice(false)}
+                className="flex-1 bg-[#0E5EA8] hover:bg-[#083c6b] text-white py-3 rounded-xl text-xs font-black uppercase tracking-wider transition-all cursor-pointer text-center"
+              >
+                Entendi! Vou Salvar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
