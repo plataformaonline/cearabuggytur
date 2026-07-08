@@ -56,14 +56,21 @@ export default function AdminPanel({
 
   // Helper trigger to execute a server JSON file save
   const [showGithubNotice, setShowGithubNotice] = useState(false);
-  const [hasPendingGitChanges, setHasPendingGitChanges] = useState(false);
+  const [hasPendingGitChanges, setHasPendingGitChanges] = useState(() => {
+    return typeof window !== "undefined" && localStorage.getItem("hasPendingGitChanges") === "true";
+  });
+
+  const updatePendingGitChanges = (value: boolean) => {
+    setHasPendingGitChanges(value);
+    localStorage.setItem("hasPendingGitChanges", String(value));
+  };
 
   const handleSaveFile = async (key: string, data: any) => {
     setFeedback({ type: "success", message: "Salvando no servidor..." });
     const res = await saveData(key, data, config.adminPassword || "admin");
     if (res.success) {
       setFeedback({ type: "success", message: `Arquivo ${key}.json atualizado com sucesso!` });
-      setHasPendingGitChanges(true);
+      updatePendingGitChanges(true);
       setShowGithubNotice(true);
     } else {
       setFeedback({ type: "error", message: `Erro ao salvar arquivo ${key}: ${res.message}` });
@@ -1834,7 +1841,10 @@ export default function AdminPanel({
                 <span>Baixar Backup Completo</span>
               </button>
               <button
-                onClick={() => setShowGithubNotice(false)}
+                onClick={() => {
+                  setShowGithubNotice(false);
+                  updatePendingGitChanges(false);
+                }}
                 className="flex-1 bg-[#0E5EA8] hover:bg-[#083c6b] text-white py-3 rounded-xl text-xs font-black uppercase tracking-wider transition-all cursor-pointer text-center"
               >
                 Entendi! Vou Salvar
