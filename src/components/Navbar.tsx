@@ -85,15 +85,16 @@ export default function Navbar({ config, onOpenAdmin }: NavbarProps) {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <div
-            className="flex items-center space-x-2 cursor-pointer group"
+            className="flex items-center space-x-3 cursor-pointer group"
             onClick={() => handleScrollTo("inicio")}
           >
-            <Compass
-              className={`w-8 h-8 transition-transform duration-500 group-hover:rotate-45 ${
-                scrolled ? "text-[#0E5EA8]" : "text-[#F4C430]"
-              }`}
+            <img
+              src="https://i.postimg.cc/SK7L2dtc/457034448-1071283451303960-8593804891191264571-n.jpg"
+              alt={config.logo || "CEARÁ BUGGY TUR"}
+              className="h-12 sm:h-14 md:h-16 w-auto object-contain rounded-xl bg-white/10 p-1.5 backdrop-blur-sm border border-white/20 shadow-md transition-all duration-300 group-hover:scale-105"
+              referrerPolicy="no-referrer"
             />
-            <span className="font-display font-extrabold text-xl tracking-wider select-none">
+            <span className="font-display font-extrabold text-lg sm:text-xl md:text-2xl tracking-wider select-none">
               {config.logo || "CEARÁ BUGGY TUR"}
             </span>
           </div>

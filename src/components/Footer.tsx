@@ -70,8 +70,13 @@ export default function Footer({ config }: FooterProps) {
         {/* Contact Info (LHS) */}
         <div className="lg:col-span-5 flex flex-col justify-between">
           <div>
-            <div className="flex items-center space-x-2 mb-6 cursor-pointer" onClick={() => handleScrollTo("inicio")}>
-              <Compass className="w-8 h-8 text-[#F4C430]" />
+            <div className="flex items-center space-x-3 mb-6 cursor-pointer" onClick={() => handleScrollTo("inicio")}>
+              <img
+                src="https://i.postimg.cc/SK7L2dtc/457034448-1071283451303960-8593804891191264571-n.jpg"
+                alt={config.logo || "CEARÁ BUGGY TUR"}
+                className="h-12 sm:h-14 w-auto object-contain rounded-xl bg-white/10 p-1.5 border border-white/20 shadow-md"
+                referrerPolicy="no-referrer"
+              />
               <span className="font-display font-extrabold text-2xl tracking-wider uppercase">
                 {config.logo || "CEARÁ BUGGY TUR"}
               </span>
