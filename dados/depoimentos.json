@@ -1,0 +1,26 @@
+[
+  {
+    "id": "dep-1",
+    "nome": "Mariana e Rodrigo Silva",
+    "foto": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&h=150&q=80",
+    "nota": 5,
+    "depoimento": "O passeio de buggy em Cumbuco com a Ceará Buggy Tur foi disparado a melhor experiência da nossa viagem! O motorista era super experiente, fez manobras emocionantes e nos levou em lagoas que parecem o caribe brasileiro. Vale cada centavo!",
+    "data": "Janeiro de 2026"
+  },
+  {
+    "id": "dep-2",
+    "nome": "Dr. Carlos Eduardo Menezes",
+    "foto": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&h=150&q=80",
+    "nota": 5,
+    "depoimento": "Fizemos o passeio de 4x4 em família para Canoa Quebrada. Carro impecável, super limpo e seguro. O guia tirou fotos espetaculares da nossa família nas falésias vermelhas. Recomendo fortemente para quem quer turismo premium.",
+    "data": "Fevereiro de 2026"
+  },
+  {
+    "id": "dep-3",
+    "nome": "Amanda Oliveira",
+    "foto": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=150&h=150&q=80",
+    "nota": 5,
+    "depoimento": "Fiz o passeio personalizado de buggy e foi incrível. Pedi 'com emoção' e foi indescritível! Sentir o vento no rosto nas dunas, com motorista extremamente cuidadoso, me deu muita segurança. Atendimento maravilhoso no WhatsApp.",
+    "data": "Março de 2026"
+  }
+]

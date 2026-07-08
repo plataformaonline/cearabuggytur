@@ -1,0 +1,90 @@
+[
+  {
+    "id": "passeio-cumbuco",
+    "titulo": "Cumbuco - Emoção Extrema",
+    "descricao": "O berço mundial do kitesurf e das dunas mais emocionantes. Inclui descida de tirolesa, esquibunda e parada na Lagoa do Parnamirim.",
+    "imagem": "https://images.unsplash.com/photo-1519046904884-53103b34b206?auto=format&fit=crop&w=800&q=80",
+    "tempo": "Dia Inteiro - 6 a 7 horas",
+    "local": "Litoral Oeste (Fortaleza/Caucaia)",
+    "preco": "350",
+    "destacado": true,
+    "ordem": 1
+  },
+  {
+    "id": "passeio-lagoinha",
+    "titulo": "Lagoinha - Cartão Postal",
+    "descricao": "Uma das praias mais lindas do Brasil. Enseada em forma de meia-lua repleta de coqueiros, lagoas de águas doces e dunas majestosas.",
+    "imagem": "https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=800&q=80",
+    "tempo": "Dia Inteiro - 8 horas",
+    "local": "Litoral Oeste (Paraipaba)",
+    "preco": "450",
+    "destacado": true,
+    "ordem": 2
+  },
+  {
+    "id": "passeio-morro-branco",
+    "titulo": "Morro Branco - Falésias Coloridas",
+    "descricao": "Famosa pelas dunas de areias coloridas e o incrível labirinto de falésias esculpidas pela ação da chuva e do vento.",
+    "imagem": "https://images.unsplash.com/photo-1509233725247-49e657c54213?auto=format&fit=crop&w=800&q=80",
+    "tempo": "Dia Inteiro - 6 horas",
+    "local": "Litoral Leste (Beberibe)",
+    "preco": "400",
+    "destacado": true,
+    "ordem": 3
+  },
+  {
+    "id": "passeio-praia-fontes",
+    "titulo": "Praia das Fontes - Grutas e Bicas",
+    "descricao": "Um espetáculo natural com bicas de água doce jorrando das falésias, além de lagoas calmas e a famosa Gruta da Mãe D'água.",
+    "imagem": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80",
+    "tempo": "Dia Inteiro - 7 horas",
+    "local": "Litoral Leste (Beberibe)",
+    "preco": "420",
+    "destacado": false,
+    "ordem": 4
+  },
+  {
+    "id": "passeio-canoa-quebrada",
+    "titulo": "Canoa Quebrada - Misticismo e Beleza",
+    "descricao": "Famosa pela Broadway e o clássico símbolo esculpido nas falésias vermelhas. Passeio com direito a passeio de buggy nas dunas gigantes.",
+    "imagem": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=800&q=80",
+    "tempo": "Dia Inteiro - 9 horas",
+    "local": "Litoral Leste (Aracati)",
+    "preco": "500",
+    "destacado": true,
+    "ordem": 5
+  },
+  {
+    "id": "passeio-personalizado",
+    "titulo": "Passeio de Buggy Personalizado",
+    "descricao": "Você define a rota! Escolha as paradas, lagoas e o nível de emoção. Nosso buggy e piloto experiente estarão 100% à sua disposição.",
+    "imagem": "https://images.unsplash.com/photo-1539650116574-8efeb43e2750?auto=format&fit=crop&w=800&q=80",
+    "tempo": "Flexível",
+    "local": "Litoral Leste ou Oeste",
+    "preco": "Sob Consulta",
+    "destacado": true,
+    "ordem": 6
+  },
+  {
+    "id": "passeio-4x4",
+    "titulo": "Aventura 4x4 Off-Road",
+    "descricao": "Para quem busca conforto absoluto e capacidade off-road extrema. Veículos 4x4 blindados de poeira e prontos para dunas extremas.",
+    "imagem": "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=800&q=80",
+    "tempo": "Dia Inteiro - 7 horas",
+    "local": "Qualquer Loteamento / Litoral",
+    "preco": "600",
+    "destacado": false,
+    "ordem": 7
+  },
+  {
+    "id": "passeio-coletivo",
+    "titulo": "Excursões Coletivas",
+    "descricao": "Conheça as belezas do Ceará economizando. Vans ou micro-ônibus climatizados com guias locais credenciados pelo Ministério do Turismo.",
+    "imagem": "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=800&q=80",
+    "tempo": "Dia Inteiro - 8 a 10 horas",
+    "local": "Principais Praias",
+    "preco": "120",
+    "destacado": false,
+    "ordem": 8
+  }
+]

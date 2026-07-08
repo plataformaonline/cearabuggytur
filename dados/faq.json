@@ -1,0 +1,27 @@
+[
+  {
+    "id": "faq-1",
+    "pergunta": "Quanto tempo dura o passeio?",
+    "resposta": "Nossos passeios de buggy e 4x4 duram em média de 6 a 8 horas, dependendo do roteiro escolhido. Geralmente iniciamos por volta das 08:30 ou 09:00 e retornamos no fim da tarde, após o pôr do sol."
+  },
+  {
+    "id": "faq-2",
+    "pergunta": "Posso levar crianças no passeio de buggy?",
+    "resposta": "Sim, com total segurança! Crianças a partir de 2 anos podem ir no buggy acompanhadas pelos pais. Possuímos adaptadores de segurança e cintos reforçados para que toda a família aproveite sem preocupações."
+  },
+  {
+    "id": "faq-3",
+    "pergunta": "Quais são as formas de pagamento aceitas?",
+    "resposta": "Aceitamos PIX, cartões de crédito (com possibilidade de parcelamento em até 3x sem juros) e cartões de débito. Você pode efetuar um sinal para reserva no Pix e o restante no dia do passeio."
+  },
+  {
+    "id": "faq-4",
+    "pergunta": "Como funciona o processo de reserva?",
+    "resposta": "É extremamente simples e rápido. Basta clicar em qualquer botão de 'Reservar Agora' ou 'Chamar no WhatsApp' no site. Você será direcionado para um de nossos guias especialistas, que confirmará as datas disponíveis e finalizará sua reserva de forma humanizada."
+  },
+  {
+    "id": "faq-5",
+    "pergunta": "O que já está incluso no valor do passeio?",
+    "resposta": "Está incluso o veículo (buggy ou 4x4) exclusivo, motorista profissional credenciado, combustível e seguro para passageiros. Despesas de alimentação, bebidas e ingressos de atrações extras (como tirolesa ou esquibunda) são pagos à parte pelos clientes."
+  }
+]

@@ -1,0 +1,6 @@
+{
+  "name": "Ceará Buggy Tur",
+  "description": "Passeios de buggy e 4x4 premium pelo litoral cearense. Reserve o seu passeio inesquecível pelo Ceará!",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

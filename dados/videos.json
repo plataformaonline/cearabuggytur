@@ -1,0 +1,32 @@
+[
+  {
+    "id": "video-1",
+    "titulo": "Adrenalina Máxima nas Dunas Cearenses",
+    "categoria": "Buggy",
+    "linkVideo": "https://assets.mixkit.co/videos/preview/mixkit-driving-in-the-desert-sands-40890-large.mp4",
+    "miniatura": "https://images.unsplash.com/photo-1539650116574-8efeb43e2750?auto=format&fit=crop&w=600&q=80",
+    "descricao": "Emoção pura nas curvas sinuosas das dunas gigantes do litoral oeste do Ceará.",
+    "destacado": true,
+    "ordem": 1
+  },
+  {
+    "id": "video-2",
+    "titulo": "As Maravilhas Fluviais do Litoral",
+    "categoria": "Paisagens",
+    "linkVideo": "https://assets.mixkit.co/videos/preview/mixkit-beautiful-aerial-view-of-waves-breaking-on-sandy-beach-43110-large.mp4",
+    "miniatura": "https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=600&q=80",
+    "descricao": "Voo rasante sobre o mar turquesa e as falésias avermelhadas.",
+    "destacado": true,
+    "ordem": 2
+  },
+  {
+    "id": "video-3",
+    "titulo": "Mergulho de Tirar o Fôlego",
+    "categoria": "Praias",
+    "linkVideo": "https://assets.mixkit.co/videos/preview/mixkit-turquoise-sea-waves-crashing-on-shore-43572-large.mp4",
+    "miniatura": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=600&q=80",
+    "descricao": "As águas mornas e transparentes que banham o litoral cearense.",
+    "destacado": false,
+    "ordem": 3
+  }
+]

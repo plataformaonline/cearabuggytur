@@ -1,0 +1,82 @@
+[
+  {
+    "id": "foto-1",
+    "titulo": "Aventura Suprema nas Dunas de Cumbuco",
+    "categoria": "Buggy",
+    "linkImagem": "https://images.unsplash.com/photo-1539650116574-8efeb43e2750?auto=format&fit=crop&w=1000&q=80",
+    "linkInstagram": "https://www.instagram.com/p/CumbucoBuggyTour/",
+    "alt": "Buggy subindo duna de areia dourada em Cumbuco Ceará com muita emoção",
+    "destacada": true,
+    "ordem": 1
+  },
+  {
+    "id": "foto-2",
+    "titulo": "Labirinto de Falésias de Morro Branco",
+    "categoria": "Paisagens",
+    "linkImagem": "https://images.unsplash.com/photo-1509233725247-49e657c54213?auto=format&fit=crop&w=1000&q=80",
+    "linkInstagram": "https://www.instagram.com/p/MorroBrancoFalesias/",
+    "alt": "Lindas falésias vermelhas e laranjas esculpidas pelo vento em Morro Branco Ceará",
+    "destacada": true,
+    "ordem": 2
+  },
+  {
+    "id": "foto-3",
+    "titulo": "Pôr do Sol Mágico na Duna do Pôr do Sol",
+    "categoria": "Pôr do Sol",
+    "linkImagem": "https://images.unsplash.com/photo-1495616811223-4d98c6e968ab?auto=format&fit=crop&w=1000&q=80",
+    "linkInstagram": "https://www.instagram.com/p/JeriSunsetMagic/",
+    "alt": "Duna do pôr do sol em Jericoacoara com sol se pondo no mar",
+    "destacada": true,
+    "ordem": 3
+  },
+  {
+    "id": "foto-4",
+    "titulo": "Grupo na Lagoa do Paraíso em Jeri",
+    "categoria": "Clientes",
+    "linkImagem": "https://images.unsplash.com/photo-1530789253388-582c481c54b0?auto=format&fit=crop&w=1000&q=80",
+    "linkInstagram": "https://www.instagram.com/p/JeriClientesFelizes/",
+    "alt": "Turistas deitados nas redes dentro da água cristalina da Lagoa do Paraíso",
+    "destacada": false,
+    "ordem": 4
+  },
+  {
+    "id": "foto-5",
+    "titulo": "Símbolo de Canoa Quebrada na Falésia",
+    "categoria": "Praias",
+    "linkImagem": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1000&q=80",
+    "linkInstagram": "https://www.instagram.com/p/CanoaQuebradaSimbolo/",
+    "alt": "Praia de Canoa Quebrada com mar azul e falésias ao fundo",
+    "destacada": true,
+    "ordem": 5
+  },
+  {
+    "id": "foto-6",
+    "titulo": "Manobra Radical nas Dunas Móveis",
+    "categoria": "Buggy",
+    "linkImagem": "https://images.unsplash.com/photo-1519046904884-53103b34b206?auto=format&fit=crop&w=1000&q=80",
+    "linkInstagram": "https://www.instagram.com/p/BuggyDunasCeara/",
+    "alt": "Buggy fazendo manobra nas dunas de areia fina sob o céu azul",
+    "destacada": false,
+    "ordem": 6
+  },
+  {
+    "id": "foto-7",
+    "titulo": "Mirante Natural da Lagoinha",
+    "categoria": "Paisagens",
+    "linkImagem": "https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1000&q=80",
+    "linkInstagram": "https://www.instagram.com/p/LagoinhaMirante/",
+    "alt": "Enseada paradisíaca da praia de Lagoinha Ceará cercada de coqueiros",
+    "destacada": true,
+    "ordem": 7
+  },
+  {
+    "id": "foto-8",
+    "titulo": "Buggy do Sol Poente",
+    "categoria": "Pôr do Sol",
+    "linkImagem": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1000&q=80",
+    "linkInstagram": "https://www.instagram.com/p/BuggySunsetView/",
+    "alt": "Silhueta de buggy nas dunas durante um pôr do sol avermelhado espetacular",
+    "destacada": false,
+    "ordem": 8
+  }
+]
