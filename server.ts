@@ -67,6 +67,61 @@ async function startServer() {
     }
   });
 
+  // API Route to export all data in a single JSON backup
+  app.get("/api/backup/exportar", (req, res) => {
+    const keys = ["banner", "config", "depoimentos", "faq", "fotos", "passeios", "videos"];
+    const backup: Record<string, any> = {};
+
+    try {
+      for (const key of keys) {
+        const filePath = path.join(process.cwd(), "dados", `${key}.json`);
+        if (fs.existsSync(filePath)) {
+          const data = fs.readFileSync(filePath, "utf-8");
+          backup[key] = JSON.parse(data);
+        } else {
+          backup[key] = null;
+        }
+      }
+      return res.json(backup);
+    } catch (e: any) {
+      return res.status(500).json({ error: "Erro ao gerar backup: " + e.message });
+    }
+  });
+
+  // API Route to import full backup
+  app.post("/api/backup/importar", (req, res) => {
+    const { password, backupData } = req.body;
+
+    // Validate password
+    const configPath = path.join(process.cwd(), "dados", "config.json");
+    let adminPassword = "admin";
+    if (fs.existsSync(configPath)) {
+      try {
+        const config = JSON.parse(fs.readFileSync(configPath, "utf-8"));
+        if (config.adminPassword) {
+          adminPassword = config.adminPassword;
+        }
+      } catch (e) {}
+    }
+
+    if (password !== adminPassword) {
+      return res.status(401).json({ error: "Senha incorreta!" });
+    }
+
+    try {
+      const keys = ["banner", "config", "depoimentos", "faq", "fotos", "passeios", "videos"];
+      for (const key of keys) {
+        if (backupData[key] !== undefined && backupData[key] !== null) {
+          const filePath = path.join(process.cwd(), "dados", `${key}.json`);
+          fs.writeFileSync(filePath, JSON.stringify(backupData[key], null, 2), "utf-8");
+        }
+      }
+      return res.json({ success: true, message: "Backup restaurado com sucesso em todos os módulos!" });
+    } catch (e: any) {
+      return res.status(500).json({ error: "Erro ao restaurar backup: " + e.message });
+    }
+  });
+
   // Vite middleware for development
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({

@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import {
   X, Save, Lock, Unlock, LayoutDashboard, Image, Video, Compass,
-  MessageSquare, Settings, Globe, Plus, Trash, Edit, CheckCircle, AlertCircle, Eye, EyeOff, User
+  MessageSquare, Settings, Globe, Plus, Trash, Edit, CheckCircle, AlertCircle, Eye, EyeOff, User,
+  Download, Upload, GitBranch
 } from "lucide-react";
 import { Config, Banner, Foto, Video as VideoType, Passeio, Depoimento, FAQ } from "../types";
 import { saveData } from "../utils/dataLoader";
@@ -87,6 +88,75 @@ export default function AdminPanel({
   const [editingPasseioId, setEditingPasseioId] = useState<string | null>(null);
   const [editingDepoimentoId, setEditingDepoimentoId] = useState<string | null>(null);
   const [editingFaqId, setEditingFaqId] = useState<string | null>(null);
+
+  // Backup Handlers
+  const handleExportBackup = async () => {
+    try {
+      setFeedback({ type: "success", message: "Gerando backup unificado..." });
+      const res = await fetch("/api/backup/exportar");
+      if (!res.ok) throw new Error("Erro ao gerar backup no servidor.");
+      const backupData = await res.json();
+      
+      const blob = new Blob([JSON.stringify(backupData, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "ceara_buggy_dados_backup.json";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      
+      setFeedback({ type: "success", message: "Backup baixado com sucesso! Salve este arquivo em um local seguro." });
+    } catch (e: any) {
+      setFeedback({ type: "error", message: `Erro ao baixar backup: ${e.message}` });
+    }
+    setTimeout(() => setFeedback(null), 5000);
+  };
+
+  const handleImportBackup = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      try {
+        const text = e.target?.result as string;
+        const backupData = JSON.parse(text);
+
+        // Validate structure briefly
+        if (!backupData.config || !backupData.fotos || !backupData.passeios) {
+          throw new Error("Arquivo de backup inválido ou corrompido.");
+        }
+
+        setFeedback({ type: "success", message: "Restaurando backup no servidor..." });
+
+        const res = await fetch("/api/backup/importar", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            password: config.adminPassword || "admin",
+            backupData
+          })
+        });
+
+        const result = await res.json();
+        if (res.ok && result.success) {
+          setFeedback({ type: "success", message: "Dados restaurados com sucesso! Recarregando página em 2 segundos..." });
+          setTimeout(() => {
+            window.location.reload();
+          }, 2000);
+        } else {
+          setFeedback({ type: "error", message: `Erro ao restaurar: ${result.error || "Tente novamente"}` });
+        }
+      } catch (err: any) {
+        setFeedback({ type: "error", message: `Erro ao ler arquivo de backup: ${err.message}` });
+      }
+    };
+    reader.readAsText(file);
+    // Reset file input so same file can be selected again
+    event.target.value = "";
+  };
 
   // Photo handlers
   const handleAddFoto = () => {
@@ -621,6 +691,72 @@ export default function AdminPanel({
                     <Save className="w-4 h-4" />
                     <span>Salvar Alterações do Banner</span>
                   </button>
+                </div>
+              </div>
+
+              {/* GitHub Synchronization & Backup */}
+              <div className="bg-slate-900 border border-white/5 rounded-2xl p-6 space-y-6">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-white/5">
+                  <div className="flex items-start space-x-3">
+                    <div className="p-2.5 bg-yellow-500/10 rounded-xl text-[#F4C430]">
+                      <GitBranch className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <h3 className="font-display font-bold text-lg text-white">Sincronização com o GitHub & Backup de Dados</h3>
+                      <p className="text-xs text-slate-400 mt-1">Como salvar permanentemente suas novas fotos, passeios e configurações.</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex flex-wrap gap-3">
+                    {/* Export button */}
+                    <button
+                      onClick={handleExportBackup}
+                      className="inline-flex items-center space-x-2 bg-[#0E5EA8] hover:bg-[#083c6b] text-white px-4 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer shadow-sm"
+                    >
+                      <Download className="w-4 h-4" />
+                      <span>Baixar Backup Completo</span>
+                    </button>
+
+                    {/* Import button (styled input file) */}
+                    <label className="inline-flex items-center space-x-2 bg-slate-800 hover:bg-slate-700 text-slate-200 px-4 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer shadow-sm border border-white/5">
+                      <Upload className="w-4 h-4 text-[#F4C430]" />
+                      <span>Restaurar Backup</span>
+                      <input
+                        type="file"
+                        accept=".json"
+                        onChange={handleImportBackup}
+                        className="hidden"
+                      />
+                    </label>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 text-xs text-slate-400 leading-relaxed">
+                  <div className="space-y-3 bg-white/5 p-4 rounded-xl border border-white/5">
+                    <h4 className="font-bold text-slate-200 flex items-center space-x-1.5">
+                      <span className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse"></span>
+                      <span>Por que as fotos não vão sozinhas para o GitHub?</span>
+                    </h4>
+                    <p>
+                      Quando você adiciona ou edita fotos neste painel, o servidor grava as alterações diretamente na pasta temporária <code className="text-yellow-400/80 font-mono">/dados/</code> do site no ar.
+                    </p>
+                    <p>
+                      Por motivos de segurança, <strong>servidores de hospedagem não possuem autorização para alterar seu repositório do GitHub diretamente</strong>. Além disso, os servidores de teste são efêmeros (stateless), o que significa que se o site reiniciar ou for atualizado, as fotos cadastradas diretamente pelo painel podem sumir se você não salvá-las no seu código.
+                    </p>
+                  </div>
+
+                  <div className="space-y-3 bg-white/5 p-4 rounded-xl border border-white/5">
+                    <h4 className="font-bold text-[#F4C430] flex items-center space-x-1.5">
+                      <CheckCircle className="w-4 h-4 text-[#F4C430]" />
+                      <span>Como salvar tudo para sempre no seu GitHub (Passo a Passo)</span>
+                    </h4>
+                    <ol className="space-y-2 list-decimal list-inside text-slate-300">
+                      <li>Sempre que fizer atualizações neste painel administrativo, clique no botão <strong>"Baixar Backup Completo"</strong> acima.</li>
+                      <li>Ele baixará um arquivo chamado <code className="text-yellow-400/80 font-mono">ceara_buggy_dados_backup.json</code> com todas as alterações em 1 clique.</li>
+                      <li>No menu lateral esquerdo ou superior da sua ferramenta <strong>Google AI Studio</strong> (onde você edita o código), você pode arrastar as novas informações, ou simplesmente pedir para a inteligência artificial (esta conversa) aplicar as novas configurações do arquivo de backup para você!</li>
+                      <li>Para exportar de vez para o GitHub, clique no botão <strong>"Sincronizar com GitHub"</strong> ou <strong>"Exportar"</strong> na barra superior do AI Studio.</li>
+                    </ol>
+                  </div>
                 </div>
               </div>
 
