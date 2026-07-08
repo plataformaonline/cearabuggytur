@@ -158,7 +158,7 @@ export default function Tours({ passeios, config }: ToursProps) {
       {/* Saiba Mais Details Modal */}
       {selectedPasseio && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/40 backdrop-blur-md animate-fadeIn">
-          <div className="bg-white/90 backdrop-blur-xl rounded-3xl max-w-2xl w-full overflow-hidden shadow-2xl border border-white/60 relative animate-scaleUp">
+          <div className="bg-white/90 backdrop-blur-xl rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-hidden shadow-2xl border border-white/60 relative animate-scaleUp flex flex-col">
             
             {/* Close Button */}
             <button
@@ -169,7 +169,7 @@ export default function Tours({ passeios, config }: ToursProps) {
             </button>
 
             {/* Banner Image */}
-            <div className="relative h-64 sm:h-80 w-full bg-slate-100">
+            <div className="relative h-48 sm:h-64 w-full bg-slate-100 flex-shrink-0">
               <img
                 src={selectedPasseio.imagem}
                 alt={selectedPasseio.titulo}
@@ -177,19 +177,19 @@ export default function Tours({ passeios, config }: ToursProps) {
                 className="w-full h-full object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent" />
-              <div className="absolute bottom-6 left-6 right-6 text-white">
+              <div className="absolute bottom-4 left-4 right-4 sm:bottom-6 sm:left-6 sm:right-6 text-white">
                 <span className="inline-flex items-center space-x-1 text-xs text-[#F4C430] font-bold font-mono tracking-wider uppercase mb-1">
                   <MapPin className="w-3.5 h-3.5" />
                   <span>{selectedPasseio.local}</span>
                 </span>
-                <h3 className="font-display font-extrabold text-2xl sm:text-4xl">
+                <h3 className="font-display font-extrabold text-xl sm:text-3xl md:text-4xl">
                   {selectedPasseio.titulo}
                 </h3>
               </div>
             </div>
 
             {/* Modal Body */}
-            <div className="p-6 sm:p-8">
+            <div className="p-5 sm:p-8 overflow-y-auto flex-1">
               <div className="flex flex-wrap gap-4 items-center justify-between mb-6 pb-4 border-b border-slate-100">
                 <div className="flex items-center space-x-2 text-slate-600 font-medium text-sm">
                   <Clock className="w-5 h-5 text-[#0E5EA8]" />

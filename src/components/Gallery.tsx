@@ -149,20 +149,20 @@ export default function Gallery({ fotos }: GalleryProps) {
           {/* Lightbox Content Card */}
           <div
             onClick={(e) => e.stopPropagation()}
-            className="bg-slate-900/95 backdrop-blur-xl rounded-3xl max-w-4xl w-full overflow-hidden shadow-2xl border border-white/10 relative flex flex-col md:flex-row max-h-[90vh]"
+            className="bg-slate-900/95 backdrop-blur-xl rounded-3xl max-w-4xl w-full overflow-y-auto md:overflow-hidden shadow-2xl border border-white/10 relative flex flex-col md:flex-row max-h-[90vh]"
           >
             {/* Left Side: Photo */}
-            <div className="md:flex-1 bg-black flex items-center justify-center overflow-hidden min-h-[300px]">
+            <div className="md:flex-1 bg-black flex items-center justify-center overflow-hidden min-h-[220px] sm:min-h-[300px]">
               <img
                 src={filteredFotos[lightboxIndex].linkImagem}
                 alt={filteredFotos[lightboxIndex].alt}
                 referrerPolicy="no-referrer"
-                className="max-w-full max-h-[70vh] object-contain"
+                className="max-w-full max-h-[50vh] md:max-h-[70vh] object-contain"
               />
             </div>
 
             {/* Right Side: Details & Actions */}
-            <div className="p-6 md:w-80 flex flex-col justify-between text-white border-t md:border-t-0 md:border-l border-white/10 bg-slate-950/40 backdrop-blur-md">
+            <div className="p-5 sm:p-6 md:w-80 flex flex-col justify-between text-white border-t md:border-t-0 md:border-l border-white/10 bg-slate-950/40 backdrop-blur-md md:max-h-[90vh] md:overflow-y-auto flex-shrink-0">
               <div>
                 <span className="bg-[#0E5EA8] text-white text-[10px] font-extrabold tracking-wider uppercase px-2.5 py-1 rounded-full">
                   {filteredFotos[lightboxIndex].categoria}
