@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import {
   X, Save, Lock, Unlock, LayoutDashboard, Image, Video, Compass,
-  MessageSquare, Settings, Globe, Plus, Trash, Edit, CheckCircle, AlertCircle, Eye, EyeOff
+  MessageSquare, Settings, Globe, Plus, Trash, Edit, CheckCircle, AlertCircle, Eye, EyeOff, User
 } from "lucide-react";
 import { Config, Banner, Foto, Video as VideoType, Passeio, Depoimento, FAQ } from "../types";
 import { saveData } from "../utils/dataLoader";
@@ -82,10 +82,26 @@ export default function AdminPanel({
     pergunta: "", resposta: ""
   });
 
+  const [editingFotoId, setEditingFotoId] = useState<string | null>(null);
+  const [editingVideoId, setEditingVideoId] = useState<string | null>(null);
+  const [editingPasseioId, setEditingPasseioId] = useState<string | null>(null);
+  const [editingDepoimentoId, setEditingDepoimentoId] = useState<string | null>(null);
+  const [editingFaqId, setEditingFaqId] = useState<string | null>(null);
+
   // Photo handlers
   const handleAddFoto = () => {
     if (!newFoto.linkImagem || !newFoto.titulo) {
       setFeedback({ type: "error", message: "Preencha o título e o link da imagem." });
+      return;
+    }
+    if (editingFotoId) {
+      const updated = fotos.map(f => f.id === editingFotoId ? { ...f, ...newFoto } as Foto : f);
+      setFotos(updated);
+      handleSaveFile("fotos", updated);
+      setEditingFotoId(null);
+      setNewFoto({ titulo: "", categoria: "Praias", linkImagem: "", linkInstagram: "", alt: "", destacada: false, ordem: updated.length + 1 });
+      setFeedback({ type: "success", message: "Foto atualizada com sucesso!" });
+      setTimeout(() => setFeedback(null), 3000);
       return;
     }
     const added: Foto = {
@@ -104,7 +120,26 @@ export default function AdminPanel({
     setNewFoto({ titulo: "", categoria: "Praias", linkImagem: "", linkInstagram: "", alt: "", destacada: false, ordem: updated.length + 1 });
   };
 
+  const handleStartEditFoto = (f: Foto) => {
+    setEditingFotoId(f.id);
+    setNewFoto({
+      titulo: f.titulo,
+      categoria: f.categoria,
+      linkImagem: f.linkImagem,
+      linkInstagram: f.linkInstagram,
+      alt: f.alt,
+      destacada: f.destacada,
+      ordem: f.ordem
+    });
+  };
+
+  const handleCancelEditFoto = () => {
+    setEditingFotoId(null);
+    setNewFoto({ titulo: "", categoria: "Praias", linkImagem: "", linkInstagram: "", alt: "", destacada: false, ordem: fotos.length + 1 });
+  };
+
   const handleDeleteFoto = (id: string) => {
+    if (editingFotoId === id) handleCancelEditFoto();
     const updated = fotos.filter(f => f.id !== id);
     setFotos(updated);
     handleSaveFile("fotos", updated);
@@ -114,6 +149,16 @@ export default function AdminPanel({
   const handleAddVideo = () => {
     if (!newVideo.linkVideo || !newVideo.titulo) {
       setFeedback({ type: "error", message: "Preencha o título e o link do vídeo." });
+      return;
+    }
+    if (editingVideoId) {
+      const updated = videos.map(v => v.id === editingVideoId ? { ...v, ...newVideo } as VideoType : v);
+      setVideos(updated);
+      handleSaveFile("videos", updated);
+      setEditingVideoId(null);
+      setNewVideo({ titulo: "", categoria: "Buggy", linkVideo: "", miniatura: "", descricao: "", destacado: false, ordem: updated.length + 1 });
+      setFeedback({ type: "success", message: "Vídeo atualizado com sucesso!" });
+      setTimeout(() => setFeedback(null), 3000);
       return;
     }
     const added: VideoType = {
@@ -132,7 +177,26 @@ export default function AdminPanel({
     setNewVideo({ titulo: "", categoria: "Buggy", linkVideo: "", miniatura: "", descricao: "", destacado: false, ordem: updated.length + 1 });
   };
 
+  const handleStartEditVideo = (v: VideoType) => {
+    setEditingVideoId(v.id);
+    setNewVideo({
+      titulo: v.titulo,
+      categoria: v.categoria,
+      linkVideo: v.linkVideo,
+      miniatura: v.miniatura,
+      descricao: v.descricao,
+      destacado: v.destacado,
+      ordem: v.ordem
+    });
+  };
+
+  const handleCancelEditVideo = () => {
+    setEditingVideoId(null);
+    setNewVideo({ titulo: "", categoria: "Buggy", linkVideo: "", miniatura: "", descricao: "", destacado: false, ordem: videos.length + 1 });
+  };
+
   const handleDeleteVideo = (id: string) => {
+    if (editingVideoId === id) handleCancelEditVideo();
     const updated = videos.filter(v => v.id !== id);
     setVideos(updated);
     handleSaveFile("videos", updated);
@@ -142,6 +206,16 @@ export default function AdminPanel({
   const handleAddPasseio = () => {
     if (!newPasseio.titulo || !newPasseio.imagem) {
       setFeedback({ type: "error", message: "Preencha o título e coloque uma imagem." });
+      return;
+    }
+    if (editingPasseioId) {
+      const updated = passeios.map(p => p.id === editingPasseioId ? { ...p, ...newPasseio } as Passeio : p);
+      setPasseios(updated);
+      handleSaveFile("passeios", updated);
+      setEditingPasseioId(null);
+      setNewPasseio({ titulo: "", descricao: "", imagem: "", tempo: "Dia Inteiro", local: "Litoral Oeste", preco: "0", destacado: false, ordem: updated.length + 1 });
+      setFeedback({ type: "success", message: "Passeio atualizado com sucesso!" });
+      setTimeout(() => setFeedback(null), 3000);
       return;
     }
     const added: Passeio = {
@@ -161,7 +235,27 @@ export default function AdminPanel({
     setNewPasseio({ titulo: "", descricao: "", imagem: "", tempo: "Dia Inteiro", local: "Litoral Oeste", preco: "0", destacado: false, ordem: updated.length + 1 });
   };
 
+  const handleStartEditPasseio = (p: Passeio) => {
+    setEditingPasseioId(p.id);
+    setNewPasseio({
+      titulo: p.titulo,
+      descricao: p.descricao,
+      imagem: p.imagem,
+      tempo: p.tempo,
+      local: p.local,
+      preco: p.preco,
+      destacado: p.destacado,
+      ordem: p.ordem
+    });
+  };
+
+  const handleCancelEditPasseio = () => {
+    setEditingPasseioId(null);
+    setNewPasseio({ titulo: "", descricao: "", imagem: "", tempo: "Dia Inteiro", local: "Litoral Oeste", preco: "0", destacado: false, ordem: passeios.length + 1 });
+  };
+
   const handleDeletePasseio = (id: string) => {
+    if (editingPasseioId === id) handleCancelEditPasseio();
     const updated = passeios.filter(p => p.id !== id);
     setPasseios(updated);
     handleSaveFile("passeios", updated);
@@ -171,6 +265,16 @@ export default function AdminPanel({
   const handleAddDepoimento = () => {
     if (!newDepoimento.nome || !newDepoimento.depoimento) {
       setFeedback({ type: "error", message: "Preencha o nome do cliente e o depoimento." });
+      return;
+    }
+    if (editingDepoimentoId) {
+      const updated = depoimentos.map(d => d.id === editingDepoimentoId ? { ...d, ...newDepoimento } as Depoimento : d);
+      setDepoimentos(updated);
+      handleSaveFile("depoimentos", updated);
+      setEditingDepoimentoId(null);
+      setNewDepoimento({ nome: "", foto: "", nota: 5, depoimento: "", data: "" });
+      setFeedback({ type: "success", message: "Depoimento atualizado com sucesso!" });
+      setTimeout(() => setFeedback(null), 3000);
       return;
     }
     const added: Depoimento = {
@@ -187,7 +291,24 @@ export default function AdminPanel({
     setNewDepoimento({ nome: "", foto: "", nota: 5, depoimento: "", data: "" });
   };
 
+  const handleStartEditDepoimento = (d: Depoimento) => {
+    setEditingDepoimentoId(d.id);
+    setNewDepoimento({
+      nome: d.nome,
+      foto: d.foto,
+      nota: d.nota,
+      depoimento: d.depoimento,
+      data: d.data
+    });
+  };
+
+  const handleCancelEditDepoimento = () => {
+    setEditingDepoimentoId(null);
+    setNewDepoimento({ nome: "", foto: "", nota: 5, depoimento: "", data: "" });
+  };
+
   const handleDeleteDepoimento = (id: string) => {
+    if (editingDepoimentoId === id) handleCancelEditDepoimento();
     const updated = depoimentos.filter(d => d.id !== id);
     setDepoimentos(updated);
     handleSaveFile("depoimentos", updated);
@@ -197,6 +318,16 @@ export default function AdminPanel({
   const handleAddFaq = () => {
     if (!newFaq.pergunta || !newFaq.resposta) {
       setFeedback({ type: "error", message: "Preencha a pergunta e a resposta." });
+      return;
+    }
+    if (editingFaqId) {
+      const updated = faq.map(f => f.id === editingFaqId ? { ...f, ...newFaq } as FAQ : f);
+      setFaq(updated);
+      handleSaveFile("faq", updated);
+      setEditingFaqId(null);
+      setNewFaq({ pergunta: "", resposta: "" });
+      setFeedback({ type: "success", message: "FAQ atualizada com sucesso!" });
+      setTimeout(() => setFeedback(null), 3000);
       return;
     }
     const added: FAQ = {
@@ -210,7 +341,21 @@ export default function AdminPanel({
     setNewFaq({ pergunta: "", resposta: "" });
   };
 
+  const handleStartEditFaq = (f: FAQ) => {
+    setEditingFaqId(f.id);
+    setNewFaq({
+      pergunta: f.pergunta,
+      resposta: f.resposta
+    });
+  };
+
+  const handleCancelEditFaq = () => {
+    setEditingFaqId(null);
+    setNewFaq({ pergunta: "", resposta: "" });
+  };
+
   const handleDeleteFaq = (id: string) => {
+    if (editingFaqId === id) handleCancelEditFaq();
     const updated = faq.filter(f => f.id !== id);
     setFaq(updated);
     handleSaveFile("faq", updated);
@@ -496,93 +641,141 @@ export default function AdminPanel({
           {/* TAB 2: FOTOS */}
           {activeTab === "fotos" && (
             <div className="space-y-8">
-              {/* Form to add a new photo */}
+              {/* Form to add or edit a photo */}
               <div className="bg-slate-900 border border-white/5 rounded-2xl p-6">
                 <h3 className="font-display font-bold text-lg mb-4 text-[#F4C430] flex items-center space-x-2">
-                  <Plus className="w-5 h-5" />
-                  <span>Adicionar Nova Foto ao Mural</span>
+                  {editingFotoId ? <Edit className="w-5 h-5" /> : <Plus className="w-5 h-5" />}
+                  <span>{editingFotoId ? `Editar Foto: ${newFoto.titulo}` : "Adicionar Nova Foto ao Mural"}</span>
                 </h3>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-400 mb-1">Título da Foto (Ex: Sunset em Jeri)</label>
-                    <input
-                      type="text"
-                      placeholder="Título da foto..."
-                      value={newFoto.titulo}
-                      onChange={(e) => setNewFoto({ ...newFoto, titulo: e.target.value })}
-                      className="w-full bg-slate-950 border border-white/5 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#0E5EA8]"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-400 mb-1">Link Direto da Imagem (Ex: Postimages.jpg)</label>
-                    <input
-                      type="text"
-                      placeholder="https://i.postimg.cc/xxxxx/foto.jpg"
-                      value={newFoto.linkImagem}
-                      onChange={(e) => setNewFoto({ ...newFoto, linkImagem: e.target.value })}
-                      className="w-full bg-slate-950 border border-white/5 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#0E5EA8]"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-400 mb-1">Categoria</label>
-                    <select
-                      value={newFoto.categoria}
-                      onChange={(e) => setNewFoto({ ...newFoto, categoria: e.target.value })}
-                      className="w-full bg-slate-950 border border-white/5 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#0E5EA8]"
-                    >
-                      <option value="Praias">Praias</option>
-                      <option value="Buggy">Buggy</option>
-                      <option value="Clientes">Clientes</option>
-                      <option value="Paisagens">Paisagens</option>
-                      <option value="Pôr do Sol">Pôr do Sol</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-400 mb-1">Link opcional do Post no Instagram</label>
-                    <input
-                      type="text"
-                      placeholder="https://www.instagram.com/p/xxxxx/"
-                      value={newFoto.linkInstagram}
-                      onChange={(e) => setNewFoto({ ...newFoto, linkInstagram: e.target.value })}
-                      className="w-full bg-slate-950 border border-white/5 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#0E5EA8]"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-400 mb-1">Texto Alternativo (SEO e Acessibilidade)</label>
-                    <input
-                      type="text"
-                      placeholder="Descreva o que aparece na foto..."
-                      value={newFoto.alt}
-                      onChange={(e) => setNewFoto({ ...newFoto, alt: e.target.value })}
-                      className="w-full bg-slate-950 border border-white/5 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#0E5EA8]"
-                    />
-                  </div>
-
-                  <div className="flex items-center space-x-6 pt-4">
-                    <label className="flex items-center space-x-2 text-xs font-semibold text-slate-400 cursor-pointer">
+                <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                  {/* Inputs Column */}
+                  <div className="lg:col-span-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-400 mb-1">Título da Foto (Ex: Sunset em Jeri)</label>
                       <input
-                        type="checkbox"
-                        checked={newFoto.destacada}
-                        onChange={(e) => setNewFoto({ ...newFoto, destacada: e.target.checked })}
-                        className="rounded border-slate-700 bg-slate-950 text-[#0E5EA8] focus:ring-[#0E5EA8]"
+                        type="text"
+                        placeholder="Título da foto..."
+                        value={newFoto.titulo}
+                        onChange={(e) => setNewFoto({ ...newFoto, titulo: e.target.value })}
+                        className="w-full bg-slate-950 border border-white/5 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#0E5EA8]"
                       />
-                      <span>Destacar esta Foto?</span>
-                    </label>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-400 mb-1">Link Direto da Imagem (Ex: Postimages.jpg)</label>
+                      <input
+                        type="text"
+                        placeholder="https://i.postimg.cc/xxxxx/foto.jpg"
+                        value={newFoto.linkImagem}
+                        onChange={(e) => setNewFoto({ ...newFoto, linkImagem: e.target.value })}
+                        className="w-full bg-slate-950 border border-white/5 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#0E5EA8]"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-400 mb-1">Categoria</label>
+                      <select
+                        value={newFoto.categoria}
+                        onChange={(e) => setNewFoto({ ...newFoto, categoria: e.target.value })}
+                        className="w-full bg-slate-950 border border-white/5 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#0E5EA8]"
+                      >
+                        <option value="Praias">Praias</option>
+                        <option value="Buggy">Buggy</option>
+                        <option value="Clientes">Clientes</option>
+                        <option value="Paisagens">Paisagens</option>
+                        <option value="Pôr do Sol">Pôr do Sol</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-400 mb-1">Link opcional do Post no Instagram</label>
+                      <input
+                        type="text"
+                        placeholder="https://www.instagram.com/p/xxxxx/"
+                        value={newFoto.linkInstagram}
+                        onChange={(e) => setNewFoto({ ...newFoto, linkInstagram: e.target.value })}
+                        className="w-full bg-slate-950 border border-white/5 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#0E5EA8]"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-400 mb-1">Texto Alternativo (SEO e Acessibilidade)</label>
+                      <input
+                        type="text"
+                        placeholder="Descreva o que aparece na foto..."
+                        value={newFoto.alt}
+                        onChange={(e) => setNewFoto({ ...newFoto, alt: e.target.value })}
+                        className="w-full bg-slate-950 border border-white/5 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#0E5EA8]"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-400 mb-1">Ordem de Exibição</label>
+                      <input
+                        type="number"
+                        placeholder="1, 2, 3..."
+                        value={newFoto.ordem || ""}
+                        onChange={(e) => setNewFoto({ ...newFoto, ordem: Number(e.target.value) })}
+                        className="w-full bg-slate-950 border border-white/5 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#0E5EA8]"
+                      />
+                    </div>
+
+                    <div className="flex items-center space-x-6 pt-4">
+                      <label className="flex items-center space-x-2 text-xs font-semibold text-slate-400 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={newFoto.destacada}
+                          onChange={(e) => setNewFoto({ ...newFoto, destacada: e.target.checked })}
+                          className="rounded border-slate-700 bg-slate-950 text-[#0E5EA8] focus:ring-[#0E5EA8]"
+                        />
+                        <span>Destacar esta Foto?</span>
+                      </label>
+                    </div>
+                  </div>
+
+                  {/* Photo Preview Column */}
+                  <div className="lg:col-span-1 flex flex-col items-center justify-center border border-white/5 bg-slate-950 rounded-2xl p-4 min-h-[180px] relative group overflow-hidden">
+                    <span className="text-[10px] font-mono text-[#F4C430] uppercase tracking-widest mb-3 font-bold">Foto Carregada</span>
+                    {newFoto.linkImagem ? (
+                      <div className="relative w-full h-32 rounded-xl overflow-hidden bg-slate-900 border border-white/10 flex items-center justify-center shadow-inner">
+                        <img
+                          src={newFoto.linkImagem}
+                          alt="Prévia"
+                          referrerPolicy="no-referrer"
+                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1594322436404-5a0526db4d13?auto=format&fit=crop&w=400&q=80";
+                          }}
+                        />
+                        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                          <span className="text-[10px] text-white font-bold uppercase tracking-widest text-center px-2">Altere o link para trocar a foto</span>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="w-full h-32 rounded-xl border border-dashed border-white/10 flex flex-col items-center justify-center bg-slate-900/50 text-slate-500">
+                        <Image className="w-8 h-8 opacity-40 mb-2 text-[#0E5EA8]" />
+                        <span className="text-[10px] text-center px-4 leading-relaxed font-sans">Cole o link da foto ao lado para carregar a prévia</span>
+                      </div>
+                    )}
                   </div>
                 </div>
 
-                <div className="mt-6 flex justify-end">
+                <div className="mt-6 flex justify-end space-x-3">
+                  {editingFotoId && (
+                    <button
+                      onClick={handleCancelEditFoto}
+                      className="inline-flex items-center space-x-2 bg-slate-800 hover:bg-slate-700 text-white px-5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer animate-fadeIn"
+                    >
+                      <span>Cancelar</span>
+                    </button>
+                  )}
                   <button
                     onClick={handleAddFoto}
                     className="inline-flex items-center space-x-2 bg-[#F4C430] hover:bg-yellow-500 text-slate-950 px-5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer"
                   >
-                    <Plus className="w-4 h-4" />
-                    <span>Adicionar à Galeria</span>
+                    {editingFotoId ? <Save className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+                    <span>{editingFotoId ? "Salvar Alterações" : "Adicionar à Galeria"}</span>
                   </button>
                 </div>
               </div>
@@ -606,13 +799,27 @@ export default function AdminPanel({
                           <p className="text-[10px] text-slate-500 mt-1 line-clamp-2">{f.alt}</p>
                         </div>
                         <div className="mt-4 pt-3 border-t border-white/5 flex items-center justify-between">
-                          <span className="text-[10px] text-slate-500">Ordem: {f.ordem}</span>
-                          <button
-                            onClick={() => handleDeleteFoto(f.id)}
-                            className="p-1.5 bg-red-500/10 hover:bg-red-500 hover:text-white rounded-lg text-red-400 transition-colors cursor-pointer"
-                          >
-                            <Trash className="w-4 h-4" />
-                          </button>
+                          <span className="text-[10px] text-slate-500 font-mono">Ordem: {f.ordem}</span>
+                          <div className="flex items-center space-x-2">
+                            <button
+                              onClick={() => handleStartEditFoto(f)}
+                              className={`p-1.5 rounded-lg transition-all cursor-pointer ${
+                                editingFotoId === f.id
+                                  ? "bg-[#0E5EA8] text-white"
+                                  : "bg-blue-500/10 hover:bg-[#0E5EA8] hover:text-white text-blue-400"
+                              }`}
+                              title="Editar Foto"
+                            >
+                              <Edit className="w-4 h-4" />
+                            </button>
+                            <button
+                              onClick={() => handleDeleteFoto(f.id)}
+                              className="p-1.5 bg-red-500/10 hover:bg-red-500 hover:text-white rounded-lg text-red-400 transition-colors cursor-pointer"
+                              title="Excluir Foto"
+                            >
+                              <Trash className="w-4 h-4" />
+                            </button>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -625,79 +832,127 @@ export default function AdminPanel({
           {/* TAB 3: VIDEOS */}
           {activeTab === "videos" && (
             <div className="space-y-8">
-              {/* Form to add a new video */}
+              {/* Form to add or edit a video */}
               <div className="bg-slate-900 border border-white/5 rounded-2xl p-6">
                 <h3 className="font-display font-bold text-lg mb-4 text-[#F4C430] flex items-center space-x-2">
-                  <Plus className="w-5 h-5" />
-                  <span>Adicionar Novo Vídeo</span>
+                  {editingVideoId ? <Edit className="w-5 h-5" /> : <Plus className="w-5 h-5" />}
+                  <span>{editingVideoId ? `Editar Vídeo: ${newVideo.titulo}` : "Adicionar Novo Vídeo"}</span>
                 </h3>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-400 mb-1">Título do Vídeo</label>
-                    <input
-                      type="text"
-                      placeholder="Título do vídeo..."
-                      value={newVideo.titulo}
-                      onChange={(e) => setNewVideo({ ...newVideo, titulo: e.target.value })}
-                      className="w-full bg-slate-950 border border-white/5 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#0E5EA8]"
-                    />
+                <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                  {/* Inputs Column */}
+                  <div className="lg:col-span-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-400 mb-1">Título do Vídeo</label>
+                      <input
+                        type="text"
+                        placeholder="Título do vídeo..."
+                        value={newVideo.titulo}
+                        onChange={(e) => setNewVideo({ ...newVideo, titulo: e.target.value })}
+                        className="w-full bg-slate-950 border border-white/5 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#0E5EA8]"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-400 mb-1">Link Direto MP4 ou Link Instagram Reels</label>
+                      <input
+                        type="text"
+                        placeholder="https://assets.mixkit.co/...mp4 ou Reels link"
+                        value={newVideo.linkVideo}
+                        onChange={(e) => setNewVideo({ ...newVideo, linkVideo: e.target.value })}
+                        className="w-full bg-slate-950 border border-white/5 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#0E5EA8]"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-400 mb-1">Link da Miniatura (Poster)</label>
+                      <input
+                        type="text"
+                        placeholder="https://i.postimg.cc/xxxxx/banner.jpg"
+                        value={newVideo.miniatura}
+                        onChange={(e) => setNewVideo({ ...newVideo, miniatura: e.target.value })}
+                        className="w-full bg-slate-950 border border-white/5 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#0E5EA8]"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-400 mb-1">Categoria</label>
+                      <select
+                        value={newVideo.categoria}
+                        onChange={(e) => setNewVideo({ ...newVideo, categoria: e.target.value })}
+                        className="w-full bg-slate-950 border border-white/5 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#0E5EA8]"
+                      >
+                        <option value="Buggy">Buggy</option>
+                        <option value="Paisagens">Paisagens</option>
+                        <option value="Praias">Praias</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-400 mb-1">Ordem de Exibição</label>
+                      <input
+                        type="number"
+                        placeholder="1, 2, 3..."
+                        value={newVideo.ordem || ""}
+                        onChange={(e) => setNewVideo({ ...newVideo, ordem: Number(e.target.value) })}
+                        className="w-full bg-slate-950 border border-white/5 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#0E5EA8]"
+                      />
+                    </div>
+
+                    <div className="lg:col-span-3">
+                      <label className="block text-xs font-semibold text-slate-400 mb-1">Pequena Descrição</label>
+                      <input
+                        type="text"
+                        placeholder="Descrição curta para o slider..."
+                        value={newVideo.descricao}
+                        onChange={(e) => setNewVideo({ ...newVideo, descricao: e.target.value })}
+                        className="w-full bg-slate-950 border border-white/5 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#0E5EA8]"
+                      />
+                    </div>
                   </div>
 
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-400 mb-1">Link Direto MP4 ou Link Instagram Reels</label>
-                    <input
-                      type="text"
-                      placeholder="https://assets.mixkit.co/...mp4 ou Reels link"
-                      value={newVideo.linkVideo}
-                      onChange={(e) => setNewVideo({ ...newVideo, linkVideo: e.target.value })}
-                      className="w-full bg-slate-950 border border-white/5 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#0E5EA8]"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-400 mb-1">Link da Miniatura (Poster)</label>
-                    <input
-                      type="text"
-                      placeholder="https://i.postimg.cc/xxxxx/banner.jpg"
-                      value={newVideo.miniatura}
-                      onChange={(e) => setNewVideo({ ...newVideo, miniatura: e.target.value })}
-                      className="w-full bg-slate-950 border border-white/5 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#0E5EA8]"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-400 mb-1">Categoria</label>
-                    <select
-                      value={newVideo.categoria}
-                      onChange={(e) => setNewVideo({ ...newVideo, categoria: e.target.value })}
-                      className="w-full bg-slate-950 border border-white/5 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#0E5EA8]"
-                    >
-                      <option value="Buggy">Buggy</option>
-                      <option value="Paisagens">Paisagens</option>
-                      <option value="Praias">Praias</option>
-                    </select>
-                  </div>
-
-                  <div className="lg:col-span-2">
-                    <label className="block text-xs font-semibold text-slate-400 mb-1">Pequena Descrição</label>
-                    <input
-                      type="text"
-                      placeholder="Descrição curta para o slider..."
-                      value={newVideo.descricao}
-                      onChange={(e) => setNewVideo({ ...newVideo, descricao: e.target.value })}
-                      className="w-full bg-slate-950 border border-white/5 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#0E5EA8]"
-                    />
+                  {/* Video Thumbnail Preview Column */}
+                  <div className="lg:col-span-1 flex flex-col items-center justify-center border border-white/5 bg-slate-950 rounded-2xl p-4 min-h-[180px] relative group overflow-hidden">
+                    <span className="text-[10px] font-mono text-[#F4C430] uppercase tracking-widest mb-3 font-bold">Miniatura / Poster</span>
+                    {newVideo.miniatura ? (
+                      <div className="relative w-full h-32 rounded-xl overflow-hidden bg-slate-900 border border-white/10 flex items-center justify-center shadow-inner">
+                        <img
+                          src={newVideo.miniatura}
+                          alt="Prévia Miniatura"
+                          referrerPolicy="no-referrer"
+                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1594322436404-5a0526db4d13?auto=format&fit=crop&w=400&q=80";
+                          }}
+                        />
+                        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                          <span className="text-[10px] text-white font-bold uppercase tracking-widest text-center px-2">Altere o link para trocar a foto</span>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="w-full h-32 rounded-xl border border-dashed border-white/10 flex flex-col items-center justify-center bg-slate-900/50 text-slate-500">
+                        <Image className="w-8 h-8 opacity-40 mb-2 text-[#0E5EA8]" />
+                        <span className="text-[10px] text-center px-4 leading-relaxed font-sans">Cole o link da miniatura ao lado para ver a prévia</span>
+                      </div>
+                    )}
                   </div>
                 </div>
 
-                <div className="mt-6 flex justify-end">
+                <div className="mt-6 flex justify-end space-x-3">
+                  {editingVideoId && (
+                    <button
+                      onClick={handleCancelEditVideo}
+                      className="inline-flex items-center space-x-2 bg-slate-800 hover:bg-slate-700 text-white px-5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer animate-fadeIn"
+                    >
+                      <span>Cancelar</span>
+                    </button>
+                  )}
                   <button
                     onClick={handleAddVideo}
                     className="inline-flex items-center space-x-2 bg-[#F4C430] hover:bg-yellow-500 text-slate-950 px-5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer"
                   >
-                    <Plus className="w-4 h-4" />
-                    <span>Cadastrar Vídeo</span>
+                    {editingVideoId ? <Save className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+                    <span>{editingVideoId ? "Salvar Alterações" : "Cadastrar Vídeo"}</span>
                   </button>
                 </div>
               </div>
@@ -721,13 +976,27 @@ export default function AdminPanel({
                       </div>
                       
                       <div className="mt-4 pt-3 border-t border-white/5 flex items-center justify-between">
-                        <span className="text-[10px] text-slate-500">Ordem: {v.ordem}</span>
-                        <button
-                          onClick={() => handleDeleteVideo(v.id)}
-                          className="p-1.5 bg-red-500/10 hover:bg-red-500 hover:text-white text-red-400 rounded-lg transition-colors cursor-pointer"
-                        >
-                          <Trash className="w-4 h-4" />
-                        </button>
+                        <span className="text-[10px] text-slate-500 font-mono">Ordem: {v.ordem}</span>
+                        <div className="flex items-center space-x-2">
+                          <button
+                            onClick={() => handleStartEditVideo(v)}
+                            className={`p-1.5 rounded-lg transition-all cursor-pointer ${
+                              editingVideoId === v.id
+                                ? "bg-[#0E5EA8] text-white"
+                                : "bg-blue-500/10 hover:bg-[#0E5EA8] hover:text-white text-blue-400"
+                            }`}
+                            title="Editar Vídeo"
+                          >
+                            <Edit className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => handleDeleteVideo(v.id)}
+                            className="p-1.5 bg-red-500/10 hover:bg-red-500 hover:text-white text-red-400 rounded-lg transition-colors cursor-pointer"
+                            title="Excluir Vídeo"
+                          >
+                            <Trash className="w-4 h-4" />
+                          </button>
+                        </div>
                       </div>
                     </div>
                   ))}
@@ -739,100 +1008,148 @@ export default function AdminPanel({
           {/* TAB 4: PASSEIOS */}
           {activeTab === "passeios" && (
             <div className="space-y-8">
-              {/* Form to add a new tour */}
+              {/* Form to add or edit a tour */}
               <div className="bg-slate-900 border border-white/5 rounded-2xl p-6">
                 <h3 className="font-display font-bold text-lg mb-4 text-[#F4C430] flex items-center space-x-2">
-                  <Plus className="w-5 h-5" />
-                  <span>Cadastrar Novo Passeio / Roteiro</span>
+                  {editingPasseioId ? <Edit className="w-5 h-5" /> : <Plus className="w-5 h-5" />}
+                  <span>{editingPasseioId ? `Editar Passeio: ${newPasseio.titulo}` : "Cadastrar Novo Passeio / Roteiro"}</span>
                 </h3>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-400 mb-1">Título do Passeio (Ex: Cumbuco Emoção)</label>
-                    <input
-                      type="text"
-                      placeholder="Ex: Cumbuco - Emoção Extrema..."
-                      value={newPasseio.titulo}
-                      onChange={(e) => setNewPasseio({ ...newPasseio, titulo: e.target.value })}
-                      className="w-full bg-slate-950 border border-white/5 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#0E5EA8]"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-400 mb-1">Duração Estimada (Ex: 6 a 8 horas)</label>
-                    <input
-                      type="text"
-                      placeholder="Ex: Dia Inteiro - 6 a 8 horas..."
-                      value={newPasseio.tempo}
-                      onChange={(e) => setNewPasseio({ ...newPasseio, tempo: e.target.value })}
-                      className="w-full bg-slate-950 border border-white/5 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#0E5EA8]"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-400 mb-1">Localização (Ex: Litoral Leste)</label>
-                    <input
-                      type="text"
-                      placeholder="Ex: Litoral Oeste (Caucaia)..."
-                      value={newPasseio.local}
-                      onChange={(e) => setNewPasseio({ ...newPasseio, local: e.target.value })}
-                      className="w-full bg-slate-950 border border-white/5 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#0E5EA8]"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-400 mb-1">Preço Inicial (Sem cifrão, ex: 350 ou 'Sob Consulta')</label>
-                    <input
-                      type="text"
-                      placeholder="Ex: 350 ou Sob Consulta..."
-                      value={newPasseio.preco}
-                      onChange={(e) => setNewPasseio({ ...newPasseio, preco: e.target.value })}
-                      className="w-full bg-slate-950 border border-white/5 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#0E5EA8]"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-400 mb-1">Link de Imagem Ilustrativa (Postimages/Unsplash)</label>
-                    <input
-                      type="text"
-                      placeholder="Ex: https://images.unsplash.com/..."
-                      value={newPasseio.imagem}
-                      onChange={(e) => setNewPasseio({ ...newPasseio, imagem: e.target.value })}
-                      className="w-full bg-slate-950 border border-white/5 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#0E5EA8]"
-                    />
-                  </div>
-
-                  <div className="flex items-center space-x-6 pt-4">
-                    <label className="flex items-center space-x-2 text-xs font-semibold text-slate-400 cursor-pointer">
+                <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                  {/* Inputs Column */}
+                  <div className="lg:col-span-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-400 mb-1">Título do Passeio (Ex: Cumbuco Emoção)</label>
                       <input
-                        type="checkbox"
-                        checked={newPasseio.destacado}
-                        onChange={(e) => setNewPasseio({ ...newPasseio, destacado: e.target.checked })}
-                        className="rounded border-slate-700 bg-slate-950 text-[#0E5EA8]"
+                        type="text"
+                        placeholder="Ex: Cumbuco - Emoção Extrema..."
+                        value={newPasseio.titulo}
+                        onChange={(e) => setNewPasseio({ ...newPasseio, titulo: e.target.value })}
+                        className="w-full bg-slate-950 border border-white/5 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#0E5EA8]"
                       />
-                      <span>Destacar como 'Mais Reservado'?</span>
-                    </label>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-400 mb-1">Duração Estimada (Ex: 6 a 8 horas)</label>
+                      <input
+                        type="text"
+                        placeholder="Ex: Dia Inteiro - 6 a 8 horas..."
+                        value={newPasseio.tempo}
+                        onChange={(e) => setNewPasseio({ ...newPasseio, tempo: e.target.value })}
+                        className="w-full bg-slate-950 border border-white/5 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#0E5EA8]"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-400 mb-1">Localização (Ex: Litoral Leste)</label>
+                      <input
+                        type="text"
+                        placeholder="Ex: Litoral Oeste (Caucaia)..."
+                        value={newPasseio.local}
+                        onChange={(e) => setNewPasseio({ ...newPasseio, local: e.target.value })}
+                        className="w-full bg-slate-950 border border-white/5 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#0E5EA8]"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-400 mb-1">Preço Inicial (Sem cifrão, ex: 350 ou 'Sob Consulta')</label>
+                      <input
+                        type="text"
+                        placeholder="Ex: 350 ou Sob Consulta..."
+                        value={newPasseio.preco}
+                        onChange={(e) => setNewPasseio({ ...newPasseio, preco: e.target.value })}
+                        className="w-full bg-slate-950 border border-white/5 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#0E5EA8]"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-400 mb-1">Link de Imagem Ilustrativa (Postimages/Unsplash)</label>
+                      <input
+                        type="text"
+                        placeholder="Ex: https://images.unsplash.com/..."
+                        value={newPasseio.imagem}
+                        onChange={(e) => setNewPasseio({ ...newPasseio, imagem: e.target.value })}
+                        className="w-full bg-slate-950 border border-white/5 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#0E5EA8]"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-400 mb-1">Ordem de Exibição</label>
+                      <input
+                        type="number"
+                        placeholder="1, 2, 3..."
+                        value={newPasseio.ordem || ""}
+                        onChange={(e) => setNewPasseio({ ...newPasseio, ordem: Number(e.target.value) })}
+                        className="w-full bg-slate-950 border border-white/5 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#0E5EA8]"
+                      />
+                    </div>
+
+                    <div className="flex items-center space-x-6 pt-4">
+                      <label className="flex items-center space-x-2 text-xs font-semibold text-slate-400 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={newPasseio.destacado}
+                          onChange={(e) => setNewPasseio({ ...newPasseio, destacado: e.target.checked })}
+                          className="rounded border-slate-700 bg-slate-950 text-[#0E5EA8]"
+                        />
+                        <span>Destacar como 'Mais Reservado'?</span>
+                      </label>
+                    </div>
+
+                    <div className="lg:col-span-3">
+                      <label className="block text-xs font-semibold text-slate-400 mb-1">Descrição Completa</label>
+                      <textarea
+                        rows={3}
+                        placeholder="Diga detalhadamente o que este passeio oferece..."
+                        value={newPasseio.descricao}
+                        onChange={(e) => setNewPasseio({ ...newPasseio, descricao: e.target.value })}
+                        className="w-full bg-slate-950 border border-white/5 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#0E5EA8]"
+                      />
+                    </div>
                   </div>
 
-                  <div className="lg:col-span-3">
-                    <label className="block text-xs font-semibold text-slate-400 mb-1">Descrição Completa</label>
-                    <textarea
-                      rows={3}
-                      placeholder="Diga detalhadamente o que este passeio oferece..."
-                      value={newPasseio.descricao}
-                      onChange={(e) => setNewPasseio({ ...newPasseio, descricao: e.target.value })}
-                      className="w-full bg-slate-950 border border-white/5 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#0E5EA8]"
-                    />
+                  {/* Photo Preview Column */}
+                  <div className="lg:col-span-1 flex flex-col items-center justify-center border border-white/5 bg-slate-950 rounded-2xl p-4 min-h-[180px] relative group overflow-hidden">
+                    <span className="text-[10px] font-mono text-[#F4C430] uppercase tracking-widest mb-3 font-bold">Imagem Ilustrativa</span>
+                    {newPasseio.imagem ? (
+                      <div className="relative w-full h-36 rounded-xl overflow-hidden bg-slate-900 border border-white/10 flex items-center justify-center shadow-inner">
+                        <img
+                          src={newPasseio.imagem}
+                          alt="Prévia Passeio"
+                          referrerPolicy="no-referrer"
+                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1594322436404-5a0526db4d13?auto=format&fit=crop&w=400&q=80";
+                          }}
+                        />
+                        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                          <span className="text-[10px] text-white font-bold uppercase tracking-widest text-center px-2">Altere o link para trocar a foto</span>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="w-full h-36 rounded-xl border border-dashed border-white/10 flex flex-col items-center justify-center bg-slate-900/50 text-slate-500">
+                        <Image className="w-8 h-8 opacity-40 mb-2 text-[#0E5EA8]" />
+                        <span className="text-[10px] text-center px-4 leading-relaxed font-sans">Cole o link da imagem ao lado para ver a prévia</span>
+                      </div>
+                    )}
                   </div>
                 </div>
 
-                <div className="mt-6 flex justify-end">
+                <div className="mt-6 flex justify-end space-x-3">
+                  {editingPasseioId && (
+                    <button
+                      onClick={handleCancelEditPasseio}
+                      className="inline-flex items-center space-x-2 bg-slate-800 hover:bg-slate-700 text-white px-5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer animate-fadeIn"
+                    >
+                      <span>Cancelar</span>
+                    </button>
+                  )}
                   <button
                     onClick={handleAddPasseio}
                     className="inline-flex items-center space-x-2 bg-[#F4C430] hover:bg-yellow-500 text-slate-950 px-5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer"
                   >
-                    <Plus className="w-4 h-4" />
-                    <span>Cadastrar Passeio</span>
+                    {editingPasseioId ? <Save className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+                    <span>{editingPasseioId ? "Salvar Alterações" : "Cadastrar Passeio"}</span>
                   </button>
                 </div>
               </div>
@@ -848,7 +1165,7 @@ export default function AdminPanel({
                         <img src={p.imagem} alt={p.titulo} referrerPolicy="no-referrer" className="w-16 h-16 rounded-xl object-cover" />
                         <div>
                           <h4 className="font-bold text-sm">{p.titulo}</h4>
-                          <span className="text-[10px] text-slate-500 font-mono block uppercase mt-0.5">{p.local} • {p.tempo}</span>
+                          <span className="text-[10px] text-slate-500 font-mono block uppercase mt-0.5">{p.local} • {p.tempo} {p.ordem ? `• Ordem: ${p.ordem}` : ""}</span>
                         </div>
                       </div>
                       
@@ -857,12 +1174,26 @@ export default function AdminPanel({
                           <span className="text-[10px] text-slate-500 block font-mono">VALOR</span>
                           <span className="text-xs font-bold text-[#F4C430]">{isNaN(Number(p.preco)) ? p.preco : `R$ ${p.preco}`}</span>
                         </div>
-                        <button
-                          onClick={() => handleDeletePasseio(p.id)}
-                          className="p-2 bg-red-500/10 hover:bg-red-500 hover:text-white text-red-400 rounded-lg transition-colors cursor-pointer"
-                        >
-                          <Trash className="w-4 h-4" />
-                        </button>
+                        <div className="flex items-center space-x-2">
+                          <button
+                            onClick={() => handleStartEditPasseio(p)}
+                            className={`p-2 rounded-lg transition-all cursor-pointer ${
+                              editingPasseioId === p.id
+                                ? "bg-[#0E5EA8] text-white"
+                                : "bg-blue-500/10 hover:bg-[#0E5EA8] hover:text-white text-blue-400"
+                            }`}
+                            title="Editar Passeio"
+                          >
+                            <Edit className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => handleDeletePasseio(p.id)}
+                            className="p-2 bg-red-500/10 hover:bg-red-500 hover:text-white text-red-400 rounded-lg transition-colors cursor-pointer"
+                            title="Excluir Passeio"
+                          >
+                            <Trash className="w-4 h-4" />
+                          </button>
+                        </div>
                       </div>
                     </div>
                   ))}
@@ -874,66 +1205,118 @@ export default function AdminPanel({
           {/* TAB 5: DEPOIMENTOS */}
           {activeTab === "depoimentos" && (
             <div className="space-y-8">
-              {/* Form to add custom testimonial */}
+              {/* Form to add or edit custom testimonial */}
               <div className="bg-slate-900 border border-white/5 rounded-2xl p-6">
                 <h3 className="font-display font-bold text-lg mb-4 text-[#F4C430] flex items-center space-x-2">
-                  <Plus className="w-5 h-5" />
-                  <span>Cadastrar Depoimento de Cliente</span>
+                  {editingDepoimentoId ? <Edit className="w-5 h-5" /> : <Plus className="w-5 h-5" />}
+                  <span>{editingDepoimentoId ? `Editar Depoimento de: ${newDepoimento.nome}` : "Cadastrar Depoimento de Cliente"}</span>
                 </h3>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-400 mb-1">Nome do Cliente (Ex: Amanda & Lucas)</label>
-                    <input
-                      type="text"
-                      placeholder="Nome dos clientes..."
-                      value={newDepoimento.nome}
-                      onChange={(e) => setNewDepoimento({ ...newDepoimento, nome: e.target.value })}
-                      className="w-full bg-slate-950 border border-white/5 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#0E5EA8]"
-                    />
+                <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                  {/* Inputs Column */}
+                  <div className="lg:col-span-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-400 mb-1">Nome do Cliente (Ex: Amanda & Lucas)</label>
+                      <input
+                        type="text"
+                        placeholder="Nome dos clientes..."
+                        value={newDepoimento.nome}
+                        onChange={(e) => setNewDepoimento({ ...newDepoimento, nome: e.target.value })}
+                        className="w-full bg-slate-950 border border-white/5 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#0E5EA8]"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-400 mb-1">Foto do Cliente (Link do Avatar/Postimages)</label>
+                      <input
+                        type="text"
+                        placeholder="Ex: https://images.unsplash.com/..."
+                        value={newDepoimento.foto}
+                        onChange={(e) => setNewDepoimento({ ...newDepoimento, foto: e.target.value })}
+                        className="w-full bg-slate-950 border border-white/5 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#0E5EA8]"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-400 mb-1">Mês / Ano do Passeio</label>
+                      <input
+                        type="text"
+                        placeholder="Ex: Março de 2026..."
+                        value={newDepoimento.data}
+                        onChange={(e) => setNewDepoimento({ ...newDepoimento, data: e.target.value })}
+                        className="w-full bg-slate-950 border border-white/5 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#0E5EA8]"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-400 mb-1">Nota (Estrelas, 1 a 5)</label>
+                      <select
+                        value={newDepoimento.nota || 5}
+                        onChange={(e) => setNewDepoimento({ ...newDepoimento, nota: Number(e.target.value) })}
+                        className="w-full bg-slate-950 border border-white/5 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#0E5EA8]"
+                      >
+                        <option value={5}>5 Estrelas</option>
+                        <option value={4}>4 Estrelas</option>
+                        <option value={3}>3 Estrelas</option>
+                        <option value={2}>2 Estrelas</option>
+                        <option value={1}>1 Estrela</option>
+                      </select>
+                    </div>
+
+                    <div className="lg:col-span-3">
+                      <label className="block text-xs font-semibold text-slate-400 mb-1">Depoimento do Cliente</label>
+                      <textarea
+                        rows={3}
+                        placeholder="Escreva aqui o relato dos clientes sobre o passeio..."
+                        value={newDepoimento.depoimento}
+                        onChange={(e) => setNewDepoimento({ ...newDepoimento, depoimento: e.target.value })}
+                        className="w-full bg-slate-950 border border-white/5 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#0E5EA8]"
+                      />
+                    </div>
                   </div>
 
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-400 mb-1">Foto do Cliente (Link do Avatar/Postimages)</label>
-                    <input
-                      type="text"
-                      placeholder="Ex: https://images.unsplash.com/..."
-                      value={newDepoimento.foto}
-                      onChange={(e) => setNewDepoimento({ ...newDepoimento, foto: e.target.value })}
-                      className="w-full bg-slate-950 border border-white/5 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#0E5EA8]"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-400 mb-1">Mês / Ano do Passeio</label>
-                    <input
-                      type="text"
-                      placeholder="Ex: Março de 2026..."
-                      value={newDepoimento.data}
-                      onChange={(e) => setNewDepoimento({ ...newDepoimento, data: e.target.value })}
-                      className="w-full bg-slate-950 border border-white/5 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#0E5EA8]"
-                    />
-                  </div>
-
-                  <div className="lg:col-span-3">
-                    <label className="block text-xs font-semibold text-slate-400 mb-1">Depoimento do Cliente</label>
-                    <textarea
-                      rows={3}
-                      placeholder="Escreva aqui o relato dos clientes sobre o passeio..."
-                      value={newDepoimento.depoimento}
-                      onChange={(e) => setNewDepoimento({ ...newDepoimento, depoimento: e.target.value })}
-                      className="w-full bg-slate-950 border border-white/5 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#0E5EA8]"
-                    />
+                  {/* Photo Preview Column */}
+                  <div className="lg:col-span-1 flex flex-col items-center justify-center border border-white/5 bg-slate-950 rounded-2xl p-4 min-h-[180px] relative group overflow-hidden">
+                    <span className="text-[10px] font-mono text-[#F4C430] uppercase tracking-widest mb-3 font-bold">Foto do Cliente</span>
+                    {newDepoimento.foto ? (
+                      <div className="relative w-24 h-24 rounded-full overflow-hidden bg-slate-900 border-2 border-[#0E5EA8] flex items-center justify-center shadow-md">
+                        <img
+                          src={newDepoimento.foto}
+                          alt="Prévia Cliente"
+                          referrerPolicy="no-referrer"
+                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80";
+                          }}
+                        />
+                        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                          <span className="text-[8px] text-white font-bold uppercase tracking-widest text-center px-1">Trocar link ao lado</span>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="w-24 h-24 rounded-full border border-dashed border-white/10 flex flex-col items-center justify-center bg-slate-900/50 text-slate-500">
+                        <User className="w-6 h-6 opacity-40 mb-1 text-[#0E5EA8]" />
+                        <span className="text-[8px] text-center px-2 leading-tight font-sans">Sem foto</span>
+                      </div>
+                    )}
                   </div>
                 </div>
 
-                <div className="mt-6 flex justify-end">
+                <div className="mt-6 flex justify-end space-x-3">
+                  {editingDepoimentoId && (
+                    <button
+                      onClick={handleCancelEditDepoimento}
+                      className="inline-flex items-center space-x-2 bg-slate-800 hover:bg-slate-700 text-white px-5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer animate-fadeIn"
+                    >
+                      <span>Cancelar</span>
+                    </button>
+                  )}
                   <button
                     onClick={handleAddDepoimento}
                     className="inline-flex items-center space-x-2 bg-[#F4C430] hover:bg-yellow-500 text-slate-950 px-5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer"
                   >
-                    <Plus className="w-4 h-4" />
-                    <span>Adicionar Depoimento</span>
+                    {editingDepoimentoId ? <Save className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+                    <span>{editingDepoimentoId ? "Salvar Alterações" : "Adicionar Depoimento"}</span>
                   </button>
                 </div>
               </div>
@@ -949,18 +1332,32 @@ export default function AdminPanel({
                         <img src={d.foto} alt={d.nome} referrerPolicy="no-referrer" className="w-12 h-12 rounded-full object-cover" />
                         <div>
                           <h4 className="font-bold text-sm">{d.nome}</h4>
-                          <span className="text-[10px] text-slate-500 block">{d.data}</span>
+                          <span className="text-[10px] text-slate-500 block">{d.data} • {d.nota} Estrelas</span>
                         </div>
                       </div>
 
                       <p className="text-xs text-slate-400 max-w-xl italic flex-1 truncate sm:mx-4">"{d.depoimento}"</p>
 
-                      <button
-                        onClick={() => handleDeleteDepoimento(d.id)}
-                        className="p-1.5 bg-red-500/10 hover:bg-red-500 hover:text-white text-red-400 rounded-lg transition-colors cursor-pointer"
-                      >
-                        <Trash className="w-4 h-4" />
-                      </button>
+                      <div className="flex items-center space-x-2">
+                        <button
+                          onClick={() => handleStartEditDepoimento(d)}
+                          className={`p-1.5 rounded-lg transition-all cursor-pointer ${
+                            editingDepoimentoId === d.id
+                              ? "bg-[#0E5EA8] text-white"
+                              : "bg-blue-500/10 hover:bg-[#0E5EA8] hover:text-white text-blue-400"
+                          }`}
+                          title="Editar Depoimento"
+                        >
+                          <Edit className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => handleDeleteDepoimento(d.id)}
+                          className="p-1.5 bg-red-500/10 hover:bg-red-500 hover:text-white text-red-400 rounded-lg transition-colors cursor-pointer"
+                          title="Excluir Depoimento"
+                        >
+                          <Trash className="w-4 h-4" />
+                        </button>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -971,11 +1368,11 @@ export default function AdminPanel({
           {/* TAB 6: FAQ */}
           {activeTab === "faq" && (
             <div className="space-y-8">
-              {/* Form to add FAQ */}
+              {/* Form to add or edit FAQ */}
               <div className="bg-slate-900 border border-white/5 rounded-2xl p-6">
                 <h3 className="font-display font-bold text-lg mb-4 text-[#F4C430] flex items-center space-x-2">
-                  <Plus className="w-5 h-5" />
-                  <span>Cadastrar Nova FAQ / Dúvida</span>
+                  {editingFaqId ? <Edit className="w-5 h-5" /> : <Plus className="w-5 h-5" />}
+                  <span>{editingFaqId ? `Editar FAQ: ${newFaq.pergunta}` : "Cadastrar Nova FAQ / Dúvida"}</span>
                 </h3>
 
                 <div className="space-y-4">
@@ -1002,13 +1399,21 @@ export default function AdminPanel({
                   </div>
                 </div>
 
-                <div className="mt-6 flex justify-end">
+                <div className="mt-6 flex justify-end space-x-3">
+                  {editingFaqId && (
+                    <button
+                      onClick={handleCancelEditFaq}
+                      className="inline-flex items-center space-x-2 bg-slate-800 hover:bg-slate-700 text-white px-5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer animate-fadeIn"
+                    >
+                      <span>Cancelar</span>
+                    </button>
+                  )}
                   <button
                     onClick={handleAddFaq}
                     className="inline-flex items-center space-x-2 bg-[#F4C430] hover:bg-yellow-500 text-slate-950 px-5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer"
                   >
-                    <Plus className="w-4 h-4" />
-                    <span>Adicionar FAQ</span>
+                    {editingFaqId ? <Save className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+                    <span>{editingFaqId ? "Salvar Alterações" : "Adicionar FAQ"}</span>
                   </button>
                 </div>
               </div>
@@ -1025,12 +1430,26 @@ export default function AdminPanel({
                         <p className="text-xs text-slate-400 mt-1 leading-relaxed">{item.resposta}</p>
                       </div>
 
-                      <button
-                        onClick={() => handleDeleteFaq(item.id)}
-                        className="p-1.5 bg-red-500/10 hover:bg-red-500 hover:text-white text-red-400 rounded-lg transition-colors cursor-pointer"
-                      >
-                        <Trash className="w-4 h-4" />
-                      </button>
+                      <div className="flex items-center space-x-2 shrink-0">
+                        <button
+                          onClick={() => handleStartEditFaq(item)}
+                          className={`p-1.5 rounded-lg transition-all cursor-pointer ${
+                            editingFaqId === item.id
+                              ? "bg-[#0E5EA8] text-white"
+                              : "bg-blue-500/10 hover:bg-[#0E5EA8] hover:text-white text-blue-400"
+                          }`}
+                          title="Editar FAQ"
+                        >
+                          <Edit className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => handleDeleteFaq(item.id)}
+                          className="p-1.5 bg-red-500/10 hover:bg-red-500 hover:text-white text-red-400 rounded-lg transition-colors cursor-pointer"
+                          title="Excluir FAQ"
+                        >
+                          <Trash className="w-4 h-4" />
+                        </button>
+                      </div>
                     </div>
                   ))}
                 </div>
