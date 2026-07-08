@@ -53,6 +53,25 @@ export default function Navbar({ config, onOpenAdmin }: NavbarProps) {
     "Olá! Vi o site de vocês e gostaria de informações sobre os passeios de buggy e 4x4 premium pelo Ceará!"
   );
 
+  const [isAdminVisible, setIsAdminVisible] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const hostname = window.location.hostname;
+      const searchParams = new URLSearchParams(window.location.search);
+      const isLocalOrPreview =
+        hostname.includes("run.app") ||
+        hostname.includes("localhost") ||
+        hostname.includes("127.0.0.1");
+      const hasAdminQuery =
+        searchParams.get("admin") === "true" ||
+        searchParams.get("admin") === "1" ||
+        searchParams.get("painel") === "true";
+      
+      setIsAdminVisible(isLocalOrPreview || hasAdminQuery);
+    }
+  }, []);
+
   return (
     <nav
       id="main-nav"
@@ -96,14 +115,16 @@ export default function Navbar({ config, onOpenAdmin }: NavbarProps) {
             ))}
             
             {/* Admin trigger embedded elegantly */}
-            <button
-              onClick={onOpenAdmin}
-              className={`text-xs opacity-40 hover:opacity-100 transition-opacity font-mono uppercase border px-2 py-1 rounded cursor-pointer ${
-                scrolled ? "border-slate-300 text-slate-500" : "border-white/20 text-white"
-              }`}
-            >
-              Painel
-            </button>
+            {isAdminVisible && (
+              <button
+                onClick={onOpenAdmin}
+                className={`text-xs opacity-40 hover:opacity-100 transition-opacity font-mono uppercase border px-2 py-1 rounded cursor-pointer ${
+                  scrolled ? "border-slate-300 text-slate-500" : "border-white/20 text-white"
+                }`}
+              >
+                Painel
+              </button>
+            )}
           </div>
 
           {/* WhatsApp CTA Button */}
@@ -121,14 +142,16 @@ export default function Navbar({ config, onOpenAdmin }: NavbarProps) {
 
           {/* Mobile menu button */}
           <div className="flex lg:hidden items-center space-x-4">
-            <button
-              onClick={onOpenAdmin}
-              className={`text-xs opacity-40 hover:opacity-100 transition-opacity font-mono border px-2 py-0.5 rounded cursor-pointer ${
-                scrolled ? "border-slate-300 text-slate-500" : "border-white/20 text-white"
-              }`}
-            >
-              Painel
-            </button>
+            {isAdminVisible && (
+              <button
+                onClick={onOpenAdmin}
+                className={`text-xs opacity-40 hover:opacity-100 transition-opacity font-mono border px-2 py-0.5 rounded cursor-pointer ${
+                  scrolled ? "border-slate-300 text-slate-500" : "border-white/20 text-white"
+                }`}
+              >
+                Painel
+              </button>
+            )}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
